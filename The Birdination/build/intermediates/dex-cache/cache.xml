@@ -2,32 +2,32 @@
 <items version="2" >
 
     <item
-        jar="C:\Users\Bobo\Desktop\The-Birdination\trunk\The Birdination\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\libs\internal_impl-23.0.1.jar"
+        jar="C:\Users\Bobo\Desktop\The-Birdination\trunk\The Birdination\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.1\jars\classes.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
-        <dex dex="C:\Users\Bobo\Desktop\The-Birdination\trunk\The Birdination\app\build\intermediates\pre-dexed\debug\internal_impl-23.0.1-d6a3ccfd2d671da1df19f4024cf698559fe81037.jar" />
-    </item>
-    <item
-        jar="C:\Users\Bobo\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.0.1\support-annotations-23.0.1.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="1fce89a6428c51467090d7f424e4c9c3dbd55f7e">
-        <dex dex="C:\Users\Bobo\Desktop\The-Birdination\trunk\The Birdination\app\build\intermediates\pre-dexed\debug\support-annotations-23.0.1-471feae60f10f228fc25eb5c91a818d7ba1a89ea.jar" />
+        sha1="d86429b0f0b3f3cafbeb78dda1b9d89119ccb05d">
+        <dex dex="C:\Users\Bobo\Desktop\The-Birdination\trunk\The Birdination\app\build\intermediates\pre-dexed\release\classes-2cd00721a52c077df1810c97424fc792a35f48a2.jar" />
     </item>
     <item
         jar="C:\Users\Bobo\Desktop\The-Birdination\trunk\The Birdination\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\classes.jar"
         jumboMode="false"
         revision="23.0.1"
         sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
-        <dex dex="C:\Users\Bobo\Desktop\The-Birdination\trunk\The Birdination\app\build\intermediates\pre-dexed\debug\classes-de1a6eacc081d6462a1d56360d9c02d26f15c616.jar" />
+        <dex dex="C:\Users\Bobo\Desktop\The-Birdination\trunk\The Birdination\app\build\intermediates\pre-dexed\release\classes-de1a6eacc081d6462a1d56360d9c02d26f15c616.jar" />
     </item>
     <item
-        jar="C:\Users\Bobo\Desktop\The-Birdination\trunk\The Birdination\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.1\jars\classes.jar"
+        jar="C:\Users\Bobo\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.0.1\support-annotations-23.0.1.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="d86429b0f0b3f3cafbeb78dda1b9d89119ccb05d">
-        <dex dex="C:\Users\Bobo\Desktop\The-Birdination\trunk\The Birdination\app\build\intermediates\pre-dexed\debug\classes-2cd00721a52c077df1810c97424fc792a35f48a2.jar" />
+        sha1="1fce89a6428c51467090d7f424e4c9c3dbd55f7e">
+        <dex dex="C:\Users\Bobo\Desktop\The-Birdination\trunk\The Birdination\app\build\intermediates\pre-dexed\release\support-annotations-23.0.1-471feae60f10f228fc25eb5c91a818d7ba1a89ea.jar" />
+    </item>
+    <item
+        jar="C:\Users\Bobo\Desktop\The-Birdination\trunk\The Birdination\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\libs\internal_impl-23.0.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
+        <dex dex="C:\Users\Bobo\Desktop\The-Birdination\trunk\The Birdination\app\build\intermediates\pre-dexed\release\internal_impl-23.0.1-d6a3ccfd2d671da1df19f4024cf698559fe81037.jar" />
     </item>
 
 </items>
