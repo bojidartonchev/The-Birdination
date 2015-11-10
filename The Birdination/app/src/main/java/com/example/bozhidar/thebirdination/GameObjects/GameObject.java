@@ -1,6 +1,6 @@
 package com.example.bozhidar.thebirdination.GameObjects;
 
-import android.graphics.Rect;
+import android.view.MotionEvent;
 
 public abstract class GameObject {
 
@@ -35,9 +35,18 @@ public abstract class GameObject {
     {
         return width;
     }
-    public Rect getRectangle()
-    {
-        return new Rect(x, y, x+width, y+height);
+
+    public boolean clickOver(MotionEvent event){
+
+        double clickedX = event.getX();
+        double clickedY = event.getY();
+
+        if(clickedX>=this.getX()&& clickedX<=this.getX() + this.getWidth()){
+            if(clickedY>=this.getY()&&clickedY<=this.getY()+this.getHeight()){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

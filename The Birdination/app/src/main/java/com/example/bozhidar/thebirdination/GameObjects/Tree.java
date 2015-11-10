@@ -10,6 +10,8 @@ public class Tree extends GameObject {
         this.image = image;
         super.setX(x);
         super.setY(y);
+        width=image.getWidth();
+        height=image.getHeight();
     }
 
     public void draw(Canvas canvas)

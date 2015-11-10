@@ -1,8 +1,12 @@
 package com.example.bozhidar.thebirdination;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -14,32 +18,29 @@ import com.example.bozhidar.thebirdination.GameObjects.Tree;
 
 import java.util.ArrayList;
 
-
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 {
-    public static final int WIDTH = 1920;
-
-    public static final int HEIGHT = 1080;
+    public static int WIDTH;
+    public static int HEIGHT;
+    public static int BIRD_SPEED = 25;
 
     private MainThread thread;
     private Background bg;
     private Bird bird;
     private ArrayList<Tree> trees;
     private HUD hud;
+    private int highestScore;
+    public boolean hasStarted;
+    private boolean gameOver;
+    private boolean higherScore;
 
-
-    public GamePanel(Context context)
+    public GamePanel(Game context)
     {
         super(context);
-        hud = new HUD(BitmapFactory.decodeResource(getResources(), R.drawable.hud));
-        trees=new ArrayList<>();
-        trees.add(new Tree(BitmapFactory.decodeResource(getResources(), R.drawable.tree3), 300, 0));
-        trees.add(new Tree(BitmapFactory.decodeResource(getResources(), R.drawable.tree2),800,0));
-        trees.add(new Tree(BitmapFactory.decodeResource(getResources(), R.drawable.tree1),1450,0));
+        setProportions(context);
 
         //add the callback to the surfaceholder to intercept events
         getHolder().addCallback(this);
-        thread = new MainThread(getHolder(), this);
 
         //make gamePanel focusable so it can handle events
         setFocusable(true);
@@ -66,37 +67,48 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder holder){
-
+    public void surfaceCreated(SurfaceHolder holder) {
         bg = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.backround));
-        bird = new Bird(BitmapFactory.decodeResource(getResources(), R.drawable.robin), 240, 314, 5);
+        initialize();
+        trees=new ArrayList<>();
+        trees.add(new Tree(BitmapFactory.decodeResource(getResources(), R.drawable.tree3), (int)(this.WIDTH/5.3), 0));
+        trees.add(new Tree(BitmapFactory.decodeResource(getResources(), R.drawable.tree2),(int)(this.WIDTH/2.3),0));
+        trees.add(new Tree(BitmapFactory.decodeResource(getResources(), R.drawable.tree1), (int)(this.WIDTH/1.3), 0));
+
         //we can safely start the game loop
+        thread = new MainThread(getHolder(), this);
         thread.setRunning(true);
         thread.start();
-
-
     }
+
+
+
     @Override
-    public boolean onTouchEvent(MotionEvent event)
-    {
+    public boolean onTouchEvent(MotionEvent event){
         if(event.getAction()==MotionEvent.ACTION_DOWN){
+            if(!hasStarted){
+                this.hasStarted=true;
+                this.bird.setPlaying(true);
 
-            double clickedX = event.getX();
-            double clickedY = event.getY();
-
-            if(clickedX>=this.bird.getX()&&clickedX<=this.bird.getX()+this.bird.getWidth()){
-                if(clickedY>=this.bird.getY()&&clickedY<=this.bird.getY()+this.bird.getHeight()){
-                    bird.setDead(true);
-                    bird=new Bird(BitmapFactory.decodeResource(getResources(), R.drawable.robin), 240, 314, 5);
-                    this.hud.setHit(this.hud.getHit()+1);
+            }
+            else if(gameOver){
+                initialize();
+                this.gameOver =false;
+                this.higherScore=false;
+                this.bird.setPlaying(true);
+            }
+            boolean onTree = false;
+            for (Tree tree : trees) {
+                if(tree.clickOver(event)){
+                    onTree=true;
                 }
             }
-
-            return true;
-        }
-
-        if(event.getAction()==MotionEvent.ACTION_UP)
-        {
+            if(this.bird.clickOver(event)&&!onTree){
+                bird.setDead(true);
+                bird=new Bird(BitmapFactory.decodeResource(getResources(), R.drawable.robin), 240, 314,5, 5, this.BIRD_SPEED);
+                this.bird.setPlaying(true);
+                this.hud.setScore(this.hud.getScore() + 1);
+            }
 
             return true;
         }
@@ -106,34 +118,94 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
     public void update()
     {
-        if(bird.getPlaying()) {
+        if(bird.getPlaying()&&!this.gameOver) {
             bird.update();
-            if(bird.getX()>this.WIDTH||bird.getY()>this.HEIGHT){
-                bird.setDead(true);
-                bird=new Bird(BitmapFactory.decodeResource(getResources(), R.drawable.robin), 240, 314, 5);
-                this.hud.setMissed(this.hud.getMissed()+1);
+            if((bird.getX()>this.WIDTH+50||bird.getY()>this.HEIGHT+50)&&!this.bird.isDead()){
+                this.gameOver=true;
+                if(this.highestScore<this.hud.getScore()){
+                    saveScore(this.hud.getScore());
+                    this.higherScore=true;
+                    this.highestScore=this.hud.getScore();
+                }
             }
         }
     }
+
     @Override
     public void draw(Canvas canvas)
     {
         final float scaleFactorX = getWidth()/(WIDTH*1.f);
         final float scaleFactorY = getHeight()/(HEIGHT*1.f);
 
-
         if(canvas!=null) {
-            final int savedState = canvas.save();
-            canvas.scale(scaleFactorX, scaleFactorY);
-            bg.draw(canvas);
-            hud.draw(canvas);
-            bird.draw(canvas);
-            for (Tree tree : trees) {
-                tree.draw(canvas);
+            if(!this.gameOver) {
+                final int savedState = canvas.save();
+                canvas.scale(scaleFactorX, scaleFactorY);
+                bg.draw(canvas);
+                hud.draw(canvas);
+                System.out.println(this.highestScore);
+                bird.draw(canvas);
+
+                for (Tree tree : trees) {
+                    tree.draw(canvas);
+                }
+
+                if(!this.hasStarted){
+                    canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.tap),
+                            GamePanel.WIDTH / 2-(BitmapFactory.decodeResource(getResources(), R.drawable.tap).getWidth()/2),
+                            GamePanel.HEIGHT / 2-(BitmapFactory.decodeResource(getResources(), R.drawable.tap).getHeight()/2),
+                            null);
+                }
+
+                canvas.restoreToCount(savedState);
             }
-            canvas.restoreToCount(savedState);
+            else{
+                if(this.higherScore){
+                    canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.highscore),
+                            GamePanel.WIDTH / 2 - (BitmapFactory.decodeResource(getResources(), R.drawable.highscore).getWidth() / 2),
+                            GamePanel.HEIGHT / 3 - (BitmapFactory.decodeResource(getResources(), R.drawable.highscore).getHeight() / 2),
+                            null);
+                }
+                else {
+                    canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.gameover),
+                            GamePanel.WIDTH / 2-(BitmapFactory.decodeResource(getResources(), R.drawable.gameover).getWidth()/2),
+                            GamePanel.HEIGHT / 4-(BitmapFactory.decodeResource(getResources(), R.drawable.gameover).getHeight()/2),
+                            null);
+                }
+                canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.tap2),
+                        GamePanel.WIDTH / 2-(BitmapFactory.decodeResource(getResources(), R.drawable.tap2).getWidth()/2),
+                        GamePanel.HEIGHT / 2-(BitmapFactory.decodeResource(getResources(), R.drawable.tap2).getHeight()/2),
+                        null);
+                this.hud.drawLable(BitmapFactory.decodeResource(getResources(), R.drawable.sign),canvas,this.highestScore);
+
+            }
         }
     }
 
+    private void saveScore(int score){
+        SharedPreferences keyValues = getContext().getSharedPreferences("highestScore", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = keyValues.edit();
+        editor.putInt("highscore", score);
+        editor.commit();
+    }
+
+    private int readScore() {
+        SharedPreferences prefs = getContext().getSharedPreferences("highestScore", Context.MODE_PRIVATE);
+        int score = prefs.getInt("highscore", 0); //0 is the default value
+        return score;
+    }
+
+    private void setProportions(Context context) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        this.WIDTH = metrics.widthPixels;
+        this.HEIGHT = metrics.heightPixels;
+    }
+
+    private void initialize() {
+        this.hud=new HUD();
+        this.BIRD_SPEED = 25;
+        this.bird = new Bird(BitmapFactory.decodeResource(getResources(), R.drawable.robin), 240, 314,5, 5, this.BIRD_SPEED);
+        this.highestScore=this.readScore();
+    }
 
 }

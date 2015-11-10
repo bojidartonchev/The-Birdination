@@ -10,6 +10,8 @@ import android.view.WindowManager;
 
 public class Game extends Activity {
 
+    private GamePanel gamePanel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,8 +19,9 @@ public class Game extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         //set to full screen
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(new GamePanel(this));
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.gamePanel = new GamePanel(this);
+        setContentView(gamePanel);
     }
 
     @Override
